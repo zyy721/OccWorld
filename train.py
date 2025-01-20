@@ -3,7 +3,7 @@ import torch, numpy as np
 import torch.distributed as dist
 from copy import deepcopy
 
-import mmcv
+# import mmcv
 from mmengine import Config
 from mmengine.runner import set_random_seed
 from mmengine.optim import build_optim_wrapper

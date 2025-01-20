@@ -3,7 +3,9 @@ from mmengine.registry import Registry
 OPENOCC_DATASET = Registry('openocc_dataset')
 OPENOCC_DATAWRAPPER = Registry('openocc_datawrapper')
 
-from .dataset import nuScenesSceneDatasetLidar, nuScenesSceneDatasetLidarTraverse
+# from .dataset import nuScenesSceneDatasetLidar, nuScenesSceneDatasetLidarTraverse
+from .dataset import nuScenesSceneDatasetLidar
+
 from .dataset_wrapper import tpvformer_dataset_nuscenes, custom_collate_fn_temporal
 from .sampler import CustomDistributedSampler
 from torch.utils.data.distributed import DistributedSampler
