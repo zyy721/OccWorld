@@ -1,4 +1,4 @@
-from .VAE.vae_2d_resnet import VAERes2D
+from .VAE.vae_2d_resnet import VAERes2D, CustomVAERes2D
 from .VAE.quantizer import VectorQuantizer
 
 from .transformer.pose_decoder import PoseDecoder

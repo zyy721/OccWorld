@@ -6,3 +6,5 @@ from .ce_loss import CeLoss
 from .plan_reg_loss_lidar import PlanRegLossLidar
 from .emb_loss import VQVAEEmbedLoss
 from .recon_loss import ReconLoss, LovaszLoss
+
+from .kld_loss import KldLoss

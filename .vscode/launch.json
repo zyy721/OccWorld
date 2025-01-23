@@ -43,7 +43,7 @@
             },
 
             "args": [
-                "--py-config", "config/train_vqvae.py",
+                "--py-config", "config/custom_train_vae.py",
                 "--work-dir", "out/vqvae",
             ]
         },

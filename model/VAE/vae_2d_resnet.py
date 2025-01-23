@@ -468,6 +468,103 @@ class Decoder2D(BaseModule):
         return h
 
 
+@MODELS.register_module()
+class CustomVAERes2D(BaseModule):
+    def __init__(
+            self, 
+            encoder_cfg, 
+            decoder_cfg,
+            num_classes=18,
+            expansion=8, 
+            vqvae_cfg=None,
+            init_cfg=None):
+        super().__init__(init_cfg)
+
+        self.expansion = expansion
+        self.num_cls = num_classes
+
+        self.encoder = MODELS.build(encoder_cfg)
+        self.decoder = MODELS.build(decoder_cfg)
+        self.class_embeds = nn.Embedding(num_classes, expansion)
+
+        if vqvae_cfg:
+            self.vqvae = MODELS.build(vqvae_cfg)
+        self.use_vq = vqvae_cfg is not None
+
+        if not self.use_vq:
+            base_channel = encoder_cfg['ch']
+            self.quant_conv = nn.Conv2d(base_channel * 2, base_channel * 2, 1)
+    
+    def sample_z(self, z):
+        dim = z.shape[1] // 2
+        mu = z[:, :dim]
+        sigma = torch.exp(z[:, dim:] / 2)
+        eps = torch.randn_like(mu)
+
+        logvar = z[:, dim:]
+
+        return mu + sigma * eps, mu, sigma, logvar
+
+    def forward_encoder(self, x):
+        # x: bs, F, H, W, D
+        bs, F, H, W, D = x.shape
+        x = self.class_embeds(x) # bs, F, H, W, D, c
+        x = x.reshape(bs*F, H, W, D * self.expansion).permute(0, 3, 1, 2)
+
+        z, shapes = self.encoder(x)
+        return z, shapes
+        
+    def forward_decoder(self, z, shapes, input_shape):
+        logits = self.decoder(z, shapes)
+
+        bs, F, H, W, D = input_shape
+        logits = logits.permute(0, 2, 3, 1).reshape(-1, D, self.expansion)
+        template = self.class_embeds.weight.T.unsqueeze(0) # 1, expansion, cls
+        similarity = torch.matmul(logits, template) # -1, D, cls
+        # pred = similarity.argmax(dim=-1) # -1, D
+        # pred = pred.reshape(bs, F, H, W, D)
+        return similarity.reshape(bs, F, H, W, D, self.num_cls)
+
+    def forward(self, x, **kwargs):
+        # xs = self.forward_encoder(x)
+        # logits = self.forward_decoder(xs)
+        # return logits, xs[-1]
+        
+        output_dict = {}
+        z, shapes = self.forward_encoder(x)
+        if self.use_vq:
+            z_sampled, loss, info = self.vqvae(z, is_voxel=False)
+            output_dict.update({'embed_loss': loss})
+        else:
+            z = self.quant_conv(z)
+            z_sampled, z_mu, z_sigma, logvar = self.sample_z(z)
+            output_dict.update({
+                'z_mu': z_mu,
+                'z_sigma': z_sigma,
+                'logvar': logvar})
+        
+        logits = self.forward_decoder(z_sampled, shapes, x.shape)
+        
+        output_dict.update({'logits': logits})
+    
+        if not self.training:
+            pred = logits.argmax(dim=-1).detach().cuda()
+            output_dict['sem_pred'] = pred
+            pred_iou = deepcopy(pred)
+            
+            pred_iou[pred_iou!=17] = 1
+            pred_iou[pred_iou==17] = 0
+            output_dict['iou_pred'] = pred_iou
+            
+        return output_dict
+        # loss, kl, rec = self.loss(logits, x, z_mu, z_sigma)
+        # return loss, kl, rec
+        
+    def generate(self, z, shapes, input_shape):
+        logits = self.forward_decoder(z, shapes, input_shape)
+        return {'logits': logits}
+
+
 if __name__ == "__main__":
     # test encoder
     import torch
