@@ -29,6 +29,26 @@
         },
 
         {
+            "name": "vae_train",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "train.py",
+
+            "python": "/home/yzhu/anaconda3/envs/llava/bin/python",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "0", // "0,1,2,3",
+                "PYTHONPATH": "${workspaceFolder}:${env:PYTHONPATH}",
+            },
+
+            "args": [
+                "--py-config", "config/custom_train_vae.py",
+                "--work-dir", "out/vqvae",
+            ]
+        },
+
+        {
             "name": "occworld_train",
             "type": "debugpy",
             "request": "launch",
@@ -48,6 +68,25 @@
             ]
         },
 
+        {
+            "name": "eval_metric_stp3",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "eval_metric_stp3.py",
+
+            "python": "/home/yzhu/anaconda3/envs/llava/bin/python",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "0", // "0,1,2,3",
+                "PYTHONPATH": "${workspaceFolder}:${env:PYTHONPATH}",
+            },
+
+            "args": [
+                "--py-config", "config/custom_occworld.py",
+                "--work-dir", "out/occworld",
+            ]
+        },
 
     ]
 }
