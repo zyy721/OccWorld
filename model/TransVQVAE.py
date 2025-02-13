@@ -455,14 +455,14 @@ class TransVQVAE(BaseModule):
         gt_ego_fut_trajs = torch.tensor([meta['rel_poses'] for meta in output_dict['output_metas']])
         gt_ego_fut_trajs = torch.cumsum(gt_ego_fut_trajs, dim=1).cpu()
         assert len(metas) == 1, f'len(metas): {len(metas)}'
-        gt_bbox = metas[0]['gt_bboxes_3d']
-        gt_attr_labels = torch.tensor(metas[0]['attr_labels'])
-        fut_valid_flag = torch.tensor(metas[0]['fut_valid_flag'])
-        # import pdb;pdb.set_trace()
-        metric_stp3 = self.compute_planner_metric_stp3(
-            pred_ego_fut_trajs, gt_ego_fut_trajs, 
-            gt_bbox, gt_attr_labels[None], True)
+        # gt_bbox = metas[0]['gt_bboxes_3d']
+        # gt_attr_labels = torch.tensor(metas[0]['attr_labels'])
+        # fut_valid_flag = torch.tensor(metas[0]['fut_valid_flag'])
+        # # import pdb;pdb.set_trace()
+        # metric_stp3 = self.compute_planner_metric_stp3(
+        #     pred_ego_fut_trajs, gt_ego_fut_trajs, 
+        #     gt_bbox, gt_attr_labels[None], True)
         
-        output_dict['metric_stp3'] = metric_stp3
+        # output_dict['metric_stp3'] = metric_stp3
         
         return output_dict

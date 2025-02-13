@@ -277,8 +277,8 @@ def main(local_rank, args):
         first_run = False
         
         # eval
-        # if epoch % cfg.get('eval_every_epochs', 1) != 0:
-        if epoch % cfg.get('eval_every_epochs', 10) != 0:
+        if epoch % cfg.get('eval_every_epochs', 1) != 0:
+        # if epoch % cfg.get('eval_every_epochs', 10) != 0:
             continue
         my_model.eval()
         os.environ['eval'] = 'true'

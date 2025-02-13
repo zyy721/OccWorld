@@ -239,8 +239,8 @@ def main(local_rank, args):
                         end_frame=cfg.get('end_frame', 12))
             else:
                 raise NotImplementedError
-            for key in metric_stp3.keys():
-                metric_stp3[key] += result_dict['metric_stp3'][key]
+            # for key in metric_stp3.keys():
+            #     metric_stp3[key] += result_dict['metric_stp3'][key]
             for key in time_used.keys():
                 time_used[key] += result_dict['time'][key]
             loss_input = {
@@ -263,6 +263,10 @@ def main(local_rank, args):
             
             CalMeanIou_sem._after_step(result_dict['sem_pred'], target_occs)
             CalMeanIou_vox._after_step(result_dict['iou_pred'], target_occs_iou)
+
+            val_miou, _ = CalMeanIou_sem._after_epoch()
+            val_iou, _ = CalMeanIou_vox._after_epoch()
+
             val_loss_list.append(loss.detach().cpu().numpy())
             if i_iter_val % print_freq == 0 and local_rank == 0:
                 logger.info('[EVAL] Epoch %d Iter %5d/%5d: Loss: %.3f (%.3f)'%(

@@ -4,13 +4,15 @@ display.start()
 
 from mayavi import mlab
 import mayavi
-mlab.options.offscreen = True
+# mlab.options.offscreen = True
+mlab.options.offscreen = False
+
 print("Set mlab.options.offscreen={}".format(mlab.options.offscreen))
 
 import time, argparse, os.path as osp, os
 import torch, numpy as np
 
-import mmcv
+# import mmcv
 from mmengine import Config
 from mmengine.runner import set_random_seed
 from mmengine.logging import MMLogger
@@ -203,7 +205,7 @@ def main(args):
     recon_dir = os.path.join(recon_dir, dataset)
     start_frame = 48
     with torch.no_grad():
-        for i_iter_val, (input_occs, target_occs, metas) in enumerate(val_dataset_loader):
+        for i_iter_val, (input_occs, target_occs, metas) in enumerate(val_dataset_loader):            
             if i_iter_val not in args.scene_idx:
                 continue
             if i_iter_val > max(args.scene_idx):

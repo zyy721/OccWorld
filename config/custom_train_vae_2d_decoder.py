@@ -143,29 +143,9 @@ model = dict(
         double_z = True,
 
     ), 
-    # decoder_cfg=dict(
-    #     # type='Decoder2D',
-    #     type='CustomDecoder2D',
-
-    #     ch = base_channel, 
-    #     out_ch = _dim_ * expansion, 
-    #     # ch_mult = (1,2,4), 
-    #     ch_mult = (1,2,4,8), 
-    #     num_res_blocks = 2,
-    #     # attn_resolutions = (50,), 
-    #     attn_resolutions = (25,), 
-    #     dropout = 0.0, 
-    #     resamp_with_conv = True, 
-    #     in_channels = _dim_ * expansion,
-    #     resolution = 200, 
-    #     # z_channels = base_channel * 2, 
-    #     # z_channels = base_channel, 
-    #     z_channels = 32, 
-    #     give_pre_end = False
-    # ),
     decoder_cfg=dict(
         # type='Decoder2D',
-        type='CustomTemporalDecoder',
+        type='CustomDecoder2D',
 
         ch = base_channel, 
         out_ch = _dim_ * expansion, 
@@ -183,6 +163,26 @@ model = dict(
         z_channels = 32, 
         give_pre_end = False
     ),
+    # decoder_cfg=dict(
+    #     # type='Decoder2D',
+    #     type='CustomTemporalDecoder',
+
+    #     ch = base_channel, 
+    #     out_ch = _dim_ * expansion, 
+    #     # ch_mult = (1,2,4), 
+    #     ch_mult = (1,2,4,8), 
+    #     num_res_blocks = 2,
+    #     # attn_resolutions = (50,), 
+    #     attn_resolutions = (25,), 
+    #     dropout = 0.0, 
+    #     resamp_with_conv = True, 
+    #     in_channels = _dim_ * expansion,
+    #     resolution = 200, 
+    #     # z_channels = base_channel * 2, 
+    #     # z_channels = base_channel, 
+    #     z_channels = 32, 
+    #     give_pre_end = False
+    # ),
     num_classes=18,
     expansion=expansion, 
     # vqvae_cfg=dict(

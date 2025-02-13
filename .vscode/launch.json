@@ -88,5 +88,31 @@
             ]
         },
 
+        {
+            "name": "visualize_demo",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "visualize_demo.py",
+
+            "python": "/home/yzhu/anaconda3/envs/Occworld/bin/python",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "0", // "0,1,2,3",
+                "PYTHONPATH": "${workspaceFolder}:${env:PYTHONPATH}",
+
+                "DISPLAY":"localhost:10.0",
+                "QT_QPA_PLATFORM":"offscreen",
+                "QT_QPA_PLATFORM":"xcb",
+
+
+            },
+
+            "args": [
+                "--py-config", "config/custom_occworld.py",
+                "--work-dir", "out/occworld",
+            ]
+        },
+
     ]
 }
